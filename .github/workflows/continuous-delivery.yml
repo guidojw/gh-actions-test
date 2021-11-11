@@ -20,6 +20,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - run: exit 1
+
       - name: Run merge
         uses: devmasx/merge-branch@v1.4.0
         with:
