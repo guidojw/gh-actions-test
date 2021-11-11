@@ -44,6 +44,7 @@ jobs:
     needs: publish
     if: |
       contains('refs/heads/staging refs/heads/master', github.ref) &&
-      ((github.ref == 'refs/heads/master' && github.event.inputs.merge == 'y' && success()) || true)
+      ((github.ref == 'refs/heads/master' && github.event.inputs.merge == 'y' && success()) ||
+      (github.event.inputs.merge != 'y' && always()))
     steps:
       - run: echo 'deploy'
