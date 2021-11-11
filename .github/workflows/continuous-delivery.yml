@@ -32,6 +32,7 @@ jobs:
   # https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#triggering-new-workflows-using-a-personal-access-token
   # so we have to call it ourselves.
   publish:
+    name: Publish
     needs: merge
     uses: guidojw/amber-ui/.github/workflows/publish-image.yml@feat/github-actions-ci
 
