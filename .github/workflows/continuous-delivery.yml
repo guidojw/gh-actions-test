@@ -1,0 +1,47 @@
+name: Continuous Delivery
+
+on:
+  workflow_dispatch:
+    inputs:
+      merge:
+        description: Merge staging into master first? (y/N)
+        required: false
+        default: "n"
+
+concurrency:
+  group: cd-${{ github.ref }}
+
+jobs:
+  merge:
+    name: Merge
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && inputs.merge == 'y'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run merge
+        uses: devmasx/merge-branch@v1.4.0
+        with:
+          type: now
+          from_branch: staging
+          target_branch: master
+          github_token: ${{ github.token }}
+
+  # The merge commit from above step did not trigger the Publish Image workflow because of
+  # https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#triggering-new-workflows-using-a-personal-access-token
+  # so we have to call it ourselves.
+  publish:
+    name: Publish
+    needs: merge
+    uses: guidojw/amber-ui/.github/workflows/publish-image.yml@feat/github-actions-ci
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: publish
+    if: |
+      contains('refs/heads/staging refs/heads/master', github.ref) &&
+      ((github.ref == 'refs/heads/master' && inputs.merge == 'y' && success()) || true)
+    steps:
+      - run: echo 'deploy'
