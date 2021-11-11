@@ -15,7 +15,7 @@ jobs:
   merge:
     name: Merge
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' && inputs.merge == 'y'
+    if: github.ref == 'refs/heads/master' && github.event.inputs.merge == 'y'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -44,6 +44,6 @@ jobs:
     needs: publish
     if: |
       contains('refs/heads/staging refs/heads/master', github.ref) &&
-      ((github.ref == 'refs/heads/master' && inputs.merge == 'y' && success()) || true)
+      ((github.ref == 'refs/heads/master' && github.event.inputs.merge == 'y' && success()) || true)
     steps:
       - run: echo 'deploy'
