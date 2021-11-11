@@ -46,4 +46,6 @@ jobs:
       contains('refs/heads/staging refs/heads/master', github.ref) &&
       ((github.ref == 'refs/heads/master' && github.event.inputs.merge == 'y' && success()) || true)
     steps:
-      - run: echo 'deploy'
+      - run: |
+          echo "${{ github.ref }}"
+          echo 'deploy'
