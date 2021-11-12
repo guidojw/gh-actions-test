@@ -15,11 +15,15 @@ jobs:
   metadata:
     name: Metadata
     runs-on: ubuntu-latest
+    outputs:
+      has_diff: ${{ steps.check.outputs.has_diff }}
     steps:
-      - run: |
-          git fetch origin staging
+      - name: Check if branches master and staging differ
+        id: check
+        run: |
           git fetch origin master
-          if [ -n $(git diff staging master --exit-code) ]; then
+          git fetch origin staging
+          if [ -n $(git diff master staging --exit-code) ]; then
             echo '::set-output name=has_diff::true'
           else
             echo '::set-output name=has_diff::false'
@@ -32,7 +36,7 @@ jobs:
     if: github.ref == 'refs/heads/master' && github.event.inputs.merge == 'y'
     steps:
       - run: |
-          echo ${{ jobs.metadata.outputs.has_diff }}
+          echo ${{ needs.jobs.metadata.outputs.has_diff }}
 
       - name: Checkout code
         uses: actions/checkout@v2
