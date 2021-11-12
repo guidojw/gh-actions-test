@@ -26,7 +26,7 @@ jobs:
         run: |
           git fetch origin master
           git fetch origin staging
-          echo '::set-output name=has_diff::${{ git diff origin/master origin/staging --exit-code && true || false }}'
+          echo "::set-output name=has_diff::$(git diff origin/master origin/staging --exit-code && true || false)"
 
   merge:
     name: Merge
