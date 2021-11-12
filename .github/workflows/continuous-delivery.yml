@@ -26,7 +26,7 @@ jobs:
         run: |
           git fetch origin master
           git fetch origin staging
-          if git diff origin/master origin/staging --exit-code; then
+          if ! git diff origin/master origin/staging --exit-code; then
             echo '::set-output name=has_diff::true'
           else
             echo '::set-output name=has_diff::false'
@@ -68,6 +68,6 @@ jobs:
       (github.event.inputs.merge != 'y' && always()))
     steps:
       - run: |
-          echo ${{ needs.jobs.metadata.outputs.has_diff }}
+          echo ${{ needs.metadata.outputs.has_diff }}
 
       - run: echo 'deploy'
