@@ -12,11 +12,28 @@ concurrency:
   group: cd-${{ github.ref }}
 
 jobs:
+  metadata:
+    name: Metadata
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          git fetch origin staging
+          git fetch origin master
+          if [ -n $(git diff staging master --exit-code) ]; then
+            echo '::set-output name=has_diff::true'
+          else
+            echo '::set-output name=has_diff::false'
+          fi
+
   merge:
     name: Merge
     runs-on: ubuntu-latest
+    needs: metadata
     if: github.ref == 'refs/heads/master' && github.event.inputs.merge == 'y'
     steps:
+      - run: |
+          echo ${{ jobs.metadata.outputs.has_diff }}
+
       - name: Checkout code
         uses: actions/checkout@v2
 
