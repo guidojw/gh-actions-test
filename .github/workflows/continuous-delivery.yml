@@ -26,11 +26,7 @@ jobs:
         run: |
           git fetch origin master
           git fetch origin staging
-          if [ -n $(git diff master staging --exit-code) ]; then
-            echo '::set-output name=has_diff::true'
-          else
-            echo '::set-output name=has_diff::false'
-          fi
+          echo '::set-output name=has_diff::${{ git diff origin/master origin/staging --exit-code && true || false }}'
 
   merge:
     name: Merge
