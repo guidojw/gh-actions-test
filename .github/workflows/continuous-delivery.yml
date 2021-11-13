@@ -58,7 +58,7 @@ jobs:
             echo 'Can only merge when the workflow target branch is master.'
             exit 1
           fi
-          if ! ${{ fromJSON(needs.metadata.outputs.has_diff }}; then
+          if ! ${{ fromJSON(needs.metadata.outputs.has_diff) }}; then
             echo 'There is no diff so a merge is not necessary, skipping next steps.'
           fi
 
