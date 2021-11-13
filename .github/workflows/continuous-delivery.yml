@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Validate branch
         run: |
-          if [ '${{ github.ref }} != 'refs/heads/staging' && '${{ github.ref }} != 'refs/heads/master' ]; then
+          if [ '${{ github.ref }}' != 'refs/heads/staging' && '${{ github.ref }}' != 'refs/heads/master' ]; then
             echo 'This workflow can only be run on branches staging and master.'
             exit 1
           fi
