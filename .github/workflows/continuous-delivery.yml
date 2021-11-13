@@ -17,7 +17,7 @@ jobs:
   branch_check:
     name: Branch Check
     runs-on: ubuntu-latest
-    if: !contains('refs/heads/staging refs/heads/master', github.ref)
+    if: ${{ !contains('refs/heads/staging refs/heads/master', github.ref) }}
     steps:
       - name: Exit
         run: |
