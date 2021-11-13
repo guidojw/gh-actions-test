@@ -15,6 +15,7 @@ jobs:
   metadata:
     name: Metadata
     runs-on: ubuntu-latest
+    if: contains('refs/heads/staging refs/heads/master', github.ref)
     outputs:
       has_diff: ${{ steps.check.outputs.has_diff }}
     steps:
@@ -58,6 +59,9 @@ jobs:
     needs: merge
     uses: guidojw/amber-ui/.github/workflows/publish-image.yml@feat/github-actions-ci
 
+  # Above comment holds for Continuous Integration too.
+  # TODO: Call Continuous Integration workflow
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -68,7 +72,4 @@ jobs:
       fromJSON(needs.metadata.outputs.has_diff) && success()) ||
       (github.event.inputs.merge != 'y' && always()))
     steps:
-      - run: |
-          echo ${{ needs.metadata.outputs.has_diff }}
-
       - run: echo 'deploy'
