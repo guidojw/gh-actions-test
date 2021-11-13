@@ -12,10 +12,22 @@ concurrency:
   group: cd-${{ github.ref }}
 
 jobs:
+  # Remove this job someday when GitHub Actions support limiting
+  # workflow_dispatch triggering to specific branches.
+  branch_check:
+    name: Branch Check
+    runs-on: ubuntu-latest
+    if: !contains('refs/heads/staging refs/heads/master', github.ref)
+    steps:
+      - name: Exit
+        run: |
+          echo 'This workflow can only be run on branches staging and master!'
+          exit 1
+
   metadata:
     name: Metadata
     runs-on: ubuntu-latest
-    if: contains('refs/heads/staging refs/heads/master', github.ref)
+    needs: branch_check
     outputs:
       has_diff: ${{ steps.check.outputs.has_diff }}
     steps:
@@ -51,8 +63,8 @@ jobs:
           target_branch: master
           github_token: ${{ github.token }}
 
-  # The merge commit from above step did not trigger the Publish Image workflow because of
-  # https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#triggering-new-workflows-using-a-personal-access-token
+  # The merge commit from above step did not trigger the Publish Image workflow
+  # because of https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#triggering-new-workflows-using-a-personal-access-token
   # so we have to call it ourselves.
   publish:
     name: Publish
