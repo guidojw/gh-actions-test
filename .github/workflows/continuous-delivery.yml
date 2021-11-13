@@ -12,30 +12,30 @@ concurrency:
   group: cd-${{ github.ref }}
 
 jobs:
-  # Remove this job someday when GitHub Actions support limiting
-  # workflow_dispatch triggering to specific branches.
+  # Remove this job someday when GitHub adds support for limiting
+  # workflow_dispatch triggering to specific branches only.
   branch_check:
     name: Branch Check
     runs-on: ubuntu-latest
-    if: ${{ !contains('refs/heads/staging refs/heads/master', github.ref) }}
     steps:
-      - name: Exit
+      - name: Validate branch
         run: |
-          echo 'This workflow can only be run on branches staging and master!'
-          exit 1
+          if [ '${{ github.ref }} != 'refs/heads/staging' && '${{ github.ref }} != 'refs/heads/master' ]; then
+            echo 'This workflow can only be run on branches staging and master.'
+            exit 1
+          fi
 
   metadata:
     name: Metadata
     runs-on: ubuntu-latest
     needs: branch_check
-    if: ${{ !success() && !failure() }}
     outputs:
       has_diff: ${{ steps.check.outputs.has_diff }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check if branches master and staging differ
+      - name: Check if branches staging and master differ
         id: check
         run: |
           git fetch origin master
@@ -50,13 +50,24 @@ jobs:
     name: Merge
     runs-on: ubuntu-latest
     needs: metadata
-    if: |
-      github.ref == 'refs/heads/master' && github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff)
+    if: github.event.inputs.merge == 'y'
     steps:
+      - name: Validate input
+        run: |
+          if [ '${{ github.ref }}' != 'refs/heads/master' ]; then
+            echo 'Can only merge when the workflow target branch is master.'
+            exit 1
+          fi
+          if ! ${{ fromJSON(needs.metadata.outputs.has_diff }}; then
+            echo 'There is no diff so a merge is not necessary, skipping next steps.'
+          fi
+
       - name: Checkout code
+        if: fromJSON(needs.metadata.outputs.has_diff)
         uses: actions/checkout@v2
 
       - name: Run merge
+        if: fromJSON(needs.metadata.outputs.has_diff)
         uses: devmasx/merge-branch@v1.4.0
         with:
           type: now
@@ -69,7 +80,8 @@ jobs:
   # so we have to call it ourselves.
   publish:
     name: Publish
-    needs: merge
+    needs: [metadata, merge]
+    if: fromJSON(needs.metadata.outputs.has_diff)
     uses: guidojw/amber-ui/.github/workflows/publish-image.yml@feat/github-actions-ci
 
   # Above comment holds for Continuous Integration too.
@@ -81,8 +93,8 @@ jobs:
     needs: [metadata, publish]
     if: |
       contains('refs/heads/staging refs/heads/master', github.ref) &&
-      ((github.ref == 'refs/heads/master' && github.event.inputs.merge == 'y' &&
+      (((github.event.inputs.merge == 'y' && github.ref == 'refs/heads/master' &&
       fromJSON(needs.metadata.outputs.has_diff) && success()) ||
-      (github.event.inputs.merge != 'y' && always()))
+      ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && always())))
     steps:
       - run: echo 'deploy'
