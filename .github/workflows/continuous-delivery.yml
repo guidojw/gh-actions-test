@@ -93,8 +93,8 @@ jobs:
     needs: [metadata, publish]
     if: |
       contains('refs/heads/staging refs/heads/master', github.ref) &&
-      (((github.event.inputs.merge == 'y' && github.ref == 'refs/heads/master' &&
-      fromJSON(needs.metadata.outputs.has_diff) && success()) ||
-      ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && always())))
+      ((github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff &&
+      github.ref == 'refs/heads/master' && success()) ||
+      ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && always()))
     steps:
       - run: echo 'deploy'
