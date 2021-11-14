@@ -107,3 +107,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             whoami
+
+      - name: Test Slack Webhook
+        run: |
+          curl -sSf \
+            -X POST \
+            -H 'Content-type: application/json' \
+            -d '{"username": "Buildkite deploy", "text": "Deploy for amber-ui '${{ github.ref }}' is finished"}' \
+            $SLACK_WEBHOOK_URL
