@@ -113,5 +113,5 @@ jobs:
           curl -sSf \
             -X POST \
             -H 'Content-type: application/json' \
-            -d '{"username": "Buildkite deploy", "text": "Deploy for amber-ui '${{ github.ref }}' is finished"}' \
+            -d '{"text": "Deploy for amber-ui '${{ github.ref }}' is finished"}' \
             ${{ secrets.SLACK_WEBHOOK_URL }}

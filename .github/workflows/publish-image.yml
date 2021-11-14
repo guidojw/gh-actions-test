@@ -11,7 +11,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-   publish:
+  publish:
     name: Publish
     if: contains('refs/heads/staging refs/heads/master', github.ref)
     runs-on: ubuntu-latest
@@ -50,3 +50,10 @@ jobs:
           cache-to: type=gha,scope=main
           tags: |
             ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:latest
+
+  update-check:
+    name: Update Check
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'Update check'
