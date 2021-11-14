@@ -98,3 +98,12 @@ jobs:
       ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && always()))
     steps:
       - run: echo 'deploy'
+
+      - name: Test SSH
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: guidojw.nl
+          username: github-actions
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            whoami
