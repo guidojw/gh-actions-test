@@ -114,4 +114,4 @@ jobs:
             -X POST \
             -H 'Content-type: application/json' \
             -d '{"username": "Buildkite deploy", "text": "Deploy for amber-ui '${{ github.ref }}' is finished"}' \
-            $SLACK_WEBHOOK_URL
+            ${{ secrets.SLACK_WEBHOOK_URL }}
