@@ -58,9 +58,8 @@ jobs:
     if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call')
     steps:
       - name: Update Check
-        if: always()
         uses: LouisBrunner/checks-action@v1.2.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Publish Image
-          conclusion: ${{ needs.publish.status }}
+          conclusion: ${{ needs.publish.result }}
