@@ -61,5 +61,5 @@ jobs:
         uses: LouisBrunner/checks-action@v1.2.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Publish Image
+          name: Publish
           conclusion: ${{ needs.publish.result }}
