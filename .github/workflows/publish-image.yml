@@ -63,5 +63,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Publish
           conclusion: ${{ needs.publish.result }}
-          action_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?check_suite_focus=true
           details_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}?check_suite_focus=true
