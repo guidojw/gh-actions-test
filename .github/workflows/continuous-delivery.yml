@@ -85,6 +85,8 @@ jobs:
     uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
     with:
       ref: refs/heads/master
+    secrets:
+      checks_token: ${{ secrets.CHECKS_TOKEN }}
 
   # Above comment holds for Continuous Integration too.
   # TODO: Call Continuous Integration workflow

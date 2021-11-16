@@ -9,6 +9,9 @@ on:
         description: The branch, tag or SHA to publish.
         required: false
         type: string
+    secrets:
+      checks_token:
+        required: true
   workflow_dispatch:
 
 env:
@@ -75,7 +78,7 @@ jobs:
         uses: LouisBrunner/checks-action@v1.2.0
         with:
           sha: ${{ needs.publish.outputs.sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CHECKS_TOKEN }}
           name: Publish
           conclusion: ${{ needs.publish.result }}
           details_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
