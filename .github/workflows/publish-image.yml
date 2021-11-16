@@ -25,7 +25,7 @@ jobs:
       - name: Validate inputs
         id: validate
         run: |
-          if [ "${{ inputs.ref }}" == "" ]; then
+          if [ "${{ inputs.ref }}" != "" ]; then
             echo 'here'
             echo '::set-output name=ref::${{ inputs.ref }}'
           else
