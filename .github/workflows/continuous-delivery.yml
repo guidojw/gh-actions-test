@@ -84,7 +84,7 @@ jobs:
     if: fromJSON(needs.metadata.outputs.has_diff)
     uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
     with:
-      ref: refs/head/master
+      ref: refs/heads/master
 
   # Above comment holds for Continuous Integration too.
   # TODO: Call Continuous Integration workflow
