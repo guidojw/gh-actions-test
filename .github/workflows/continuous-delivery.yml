@@ -82,7 +82,7 @@ jobs:
     name: Publish
     needs: [metadata, merge]
     if: fromJSON(needs.metadata.outputs.has_diff)
-    uses: guidojw/amber-ui/.github/workflows/publish-image.yml@feat/github-actions-ci
+    uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
     with:
       ref: refs/head/master
 
