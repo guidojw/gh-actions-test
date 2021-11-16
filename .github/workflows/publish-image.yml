@@ -74,11 +74,18 @@ jobs:
     needs: publish
     if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call')
     steps:
+      - name: Generate app token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: 152323
+          private_key: ${{ secrets.CHECKS_TOKEN }}
+
       - name: Update Publish Check
         uses: LouisBrunner/checks-action@v1.2.0
         with:
           sha: ${{ needs.publish.outputs.sha }}
-          token: ${{ secrets.CHECKS_TOKEN }}
+          token: ${{ steps.generate_token.outputs.token }}
           name: Publish
           conclusion: ${{ needs.publish.result }}
           details_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
