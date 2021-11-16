@@ -83,8 +83,8 @@ jobs:
     needs: [metadata, merge]
     if: fromJSON(needs.metadata.outputs.has_diff)
     uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
-    with:
-      ref: refs/heads/master
+    secrets:
+      app_private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
   # Above comment holds for Continuous Integration too.
   # TODO: Call Continuous Integration workflow
@@ -108,9 +108,9 @@ jobs:
           username: github-actions
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            whoami
+            ls /opt/docker
 
-      - name: Test Slack Webhook
+      - name: Test Slack webhook
         run: |
           curl -sSf \
             -X POST \
