@@ -110,7 +110,7 @@ jobs:
           script: |
             ls /opt/docker
 
-      - name: Test Slack Webhook
+      - name: Test Slack webhook
         run: |
           curl -sSf \
             -X POST \

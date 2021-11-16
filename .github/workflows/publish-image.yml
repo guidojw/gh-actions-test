@@ -80,6 +80,6 @@ jobs:
         with:
           sha: ${{ needs.publish.outputs.sha }}
           token: ${{ steps.generate_token.outputs.token }}
-          name: Publish
+          name: Publish Image
           conclusion: ${{ needs.publish.result }}
           details_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
