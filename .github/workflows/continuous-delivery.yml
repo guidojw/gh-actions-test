@@ -108,7 +108,7 @@ jobs:
           username: github-actions
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            whoami
+            ls /opt/docker
 
       - name: Test Slack Webhook
         run: |
