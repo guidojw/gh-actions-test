@@ -35,7 +35,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check if branches staging and master differ
+      - name: Check diff
         id: check
         run: |
           git fetch origin master
