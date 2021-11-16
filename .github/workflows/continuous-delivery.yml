@@ -83,6 +83,8 @@ jobs:
     needs: [metadata, merge]
     if: fromJSON(needs.metadata.outputs.has_diff)
     uses: guidojw/amber-ui/.github/workflows/publish-image.yml@feat/github-actions-ci
+    with:
+      ref: refs/head/master
 
   # Above comment holds for Continuous Integration too.
   # TODO: Call Continuous Integration workflow
