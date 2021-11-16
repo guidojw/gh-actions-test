@@ -14,7 +14,7 @@ concurrency:
 jobs:
   # Remove this job someday when GitHub adds support for limiting
   # workflow_dispatch triggering to specific branches only.
-  branch_check:
+  branch-check:
     name: Branch Check
     runs-on: ubuntu-latest
     steps:
@@ -28,14 +28,14 @@ jobs:
   metadata:
     name: Metadata
     runs-on: ubuntu-latest
-    needs: branch_check
+    needs: branch-check
     outputs:
       has_diff: ${{ steps.check.outputs.has_diff }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check if branches staging and master differ
+      - name: Check diff
         id: check
         run: |
           git fetch origin master
@@ -83,6 +83,8 @@ jobs:
     needs: [metadata, merge]
     if: fromJSON(needs.metadata.outputs.has_diff)
     uses: guidojw/amber-ui/.github/workflows/publish-image.yml@feat/github-actions-ci
+    with:
+      ref: refs/head/master
 
   # Above comment holds for Continuous Integration too.
   # TODO: Call Continuous Integration workflow
@@ -98,3 +100,20 @@ jobs:
       ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && always()))
     steps:
       - run: echo 'deploy'
+
+      - name: Test SSH
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: guidojw.nl
+          username: github-actions
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            whoami
+
+      - name: Test Slack Webhook
+        run: |
+          curl -sSf \
+            -X POST \
+            -H 'Content-type: application/json' \
+            -d '{"text": "Deploy for amber-ui '${{ github.ref }}' is finished"}' \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
