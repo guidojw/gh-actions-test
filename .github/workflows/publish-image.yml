@@ -4,11 +4,6 @@ on:
   push:
     branches: [staging, master]
   workflow_call:
-    inputs:
-      ref:
-        description: The branch, tag or SHA to publish.
-        required: false
-        type: string
     secrets:
       app_private_key:
         required: true
@@ -17,6 +12,7 @@ on:
 env:
   REGISTRY_URL: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  APP_ID: 152323
 
 jobs:
   publish:
@@ -28,8 +24,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          ref: ${{ inputs.ref }}
 
       - name: Output current commit SHA
         id: output
@@ -78,7 +72,7 @@ jobs:
         id: generate_token
         uses: tibdex/github-app-token@v1
         with:
-          app_id: 152323
+          app_id: ${{ env.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Update Publish check

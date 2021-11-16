@@ -83,10 +83,8 @@ jobs:
     needs: [metadata, merge]
     if: fromJSON(needs.metadata.outputs.has_diff)
     uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
-    with:
-      ref: refs/heads/master
     secrets:
-      checks_token: ${{ secrets.CHECKS_TOKEN }}
+      app_private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
   # Above comment holds for Continuous Integration too.
   # TODO: Call Continuous Integration workflow
