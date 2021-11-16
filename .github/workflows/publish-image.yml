@@ -20,7 +20,7 @@ jobs:
     name: Metadata
     runs-on: ubuntu-latest
     outputs:
-      ref: ${{ steps.validate.outputs.ref
+      ref: ${{ steps.validate.outputs.ref }}
     steps:
       - name: Validate inputs
         id: validate
