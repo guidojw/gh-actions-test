@@ -22,7 +22,7 @@ jobs:
         env:
           REF: ${{ github.ref }}
         run: |
-          if [ "$REF" != 'refs/heads/staging' && "$REF" != 'refs/heads/master' ]; then
+          if [ "$REF" != 'refs/heads/staging' ] && [ "$REF" != 'refs/heads/master' ]; then
             echo 'This workflow can only be run on branches staging and master.'
             exit 1
           fi
