@@ -15,16 +15,37 @@ env:
   APP_ID: 152323
 
 jobs:
+  metadata:
+    name: Metadata
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.metadata.outputs.tag }}
+    steps:
+      - name: Get metadata
+        id: metadata
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          BRANCH_NAME="${REF#refs/heads/}"
+          if [ "$BRANCH_NAME" == 'master' ]; then
+            echo '::set-output name=tag::latest'
+          else
+            echo '::set-output name=tag::'"$BRANCH_NAME"
+          fi
+
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    needs: metadata
     outputs:
       sha: ${{ steps.output.outputs.sha }}
-    if: contains('refs/heads/staging refs/heads/master', github.ref)
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
+        # When this workflow is called after a merge (in Continuous Delivery),
+        # github.sha does not point to the latest commit, so we have to get it
+        # manually here.
       - name: Output current commit SHA
         id: output
         run: |
@@ -40,8 +61,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push staging image
-        if: github.ref == 'refs/heads/staging'
+      - name: Build and push image
         uses: docker/build-push-action@v2
         with:
           push: true
@@ -49,18 +69,7 @@ jobs:
           cache-from: type=gha,scope=main
           cache-to: type=gha,scope=main
           tags: |
-            ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:staging
-
-      - name: Build and push production image
-        if: github.ref == 'refs/heads/master'
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          context: .
-          cache-from: type=gha,scope=main
-          cache-to: type=gha,scope=main
-          tags: |
-            ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ needs.metadata.outputs.tag }}
 
   update-checks:
     name: Update checks
