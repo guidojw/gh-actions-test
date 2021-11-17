@@ -50,7 +50,7 @@ jobs:
           else
             echo '::set-output name=has_diff::false'
           fi
-          if [ "$REF" == 'refs/heads/master' ]; then
+          if [ "$REF" = 'refs/heads/master' ]; then
             echo '::set-output name=stage::production'
           else
             echo '::set-output name=stage::staging'

@@ -27,7 +27,7 @@ jobs:
           REF: ${{ github.ref }}
         run: |
           BRANCH_NAME="${REF#refs/heads/}"
-          if [ "$BRANCH_NAME" == 'master' ]; then
+          if [ "$BRANCH_NAME" = 'master' ]; then
             echo '::set-output name=tag::latest'
           else
             echo '::set-output name=tag::'"$BRANCH_NAME"
