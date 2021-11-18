@@ -4,9 +4,10 @@ on:
   push:
     branches: [staging, master]
   workflow_call:
-    secrets:
+    inputs:
       sha:
         required: false
+    secrets:
       app_private_key:
         required: true
   workflow_dispatch:

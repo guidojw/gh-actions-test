@@ -108,8 +108,9 @@ jobs:
     needs: [metadata, merge]
     if: needs.metadata.outputs.has_diff
     uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
-    secrets:
+    with:
       sha: ${{ needs.merge.outputs.sha }}
+    secrets:
       app_private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
   # Above comment holds for Continuous Integration too.
