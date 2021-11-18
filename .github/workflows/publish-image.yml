@@ -42,22 +42,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
 
       # When this workflow is called after a merge (in Continuous Delivery),
       # github.sha does not point to the latest commit, so we have to get it
-      # manually here.
+      # manually.
       - name: Get latest commit SHA
         id: get_sha
-        env:
-          REF: ${{ github.ref }}
         run: |
-          git fetch origin $REF
           echo '::set-output name=sha::'$(git rev-parse HEAD)
-
-      - name: Checkout latest commit
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ steps.get_sha.outputs.sha }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
