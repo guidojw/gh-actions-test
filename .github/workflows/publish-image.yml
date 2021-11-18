@@ -7,6 +7,7 @@ on:
     inputs:
       sha:
         required: false
+        type: string
     secrets:
       app_private_key:
         required: true
