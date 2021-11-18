@@ -81,11 +81,11 @@ jobs:
           fi
 
       - name: Checkout code
-        if: needs.metadata.outputs.has_diff
+        if: ${{ needs.metadata.outputs.has_diff }}
         uses: actions/checkout@v2
 
       - name: Run merge
-        if: needs.metadata.outputs.has_diff
+        if: ${{ needs.metadata.outputs.has_diff }}
         uses: devmasx/merge-branch@v1.4.0
         with:
           type: now
@@ -95,7 +95,7 @@ jobs:
 
       - name: Get merge commit SHA
         id: get_sha
-        if: needs.metadata.outputs.has_diff
+        if: ${{ needs.metadata.outputs.has_diff }}
         run: |
           git fetch
           echo '::set-output name=sha::'$(git rev-parse HEAD)
@@ -106,7 +106,7 @@ jobs:
   publish:
     name: Publish
     needs: [metadata, merge]
-    if: needs.metadata.outputs.has_diff
+    if: ${{ needs.metadata.outputs.has_diff }}
     uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
     with:
       sha: ${{ needs.merge.outputs.sha }}
