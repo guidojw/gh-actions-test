@@ -122,7 +122,8 @@ jobs:
       contains('refs/heads/staging refs/heads/master', github.ref) &&
       ((github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff) &&
       github.ref == 'refs/heads/master' && success()) ||
-      ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && !failure() && !success()))
+      ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) &&
+      needs.publish.status == 'skipped'))
     steps:
       - name: Test SSH
         uses: appleboy/ssh-action@v0.1.4
