@@ -123,7 +123,7 @@ jobs:
       ((github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff) &&
       github.ref == 'refs/heads/master' && success()) ||
       ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) &&
-      needs.publish.status == 'skipped'))
+      !needs.publish.status))
     steps:
       - name: Test SSH
         uses: appleboy/ssh-action@v0.1.4
