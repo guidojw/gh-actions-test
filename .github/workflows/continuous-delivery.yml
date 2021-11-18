@@ -156,8 +156,9 @@ jobs:
         env:
           RESULT: ${{ needs.deploy.result }}
         run: |
+          echo $RESULT
           if [ $RESULT = 'skipped' ]; then
-            echo '::set-output name=conclusion::cancelled'
+            echo '::set-output name=conclusion::failure'
           else
             echo '::set-output name=conclusion::'$RESULT
           fi
