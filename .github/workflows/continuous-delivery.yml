@@ -76,11 +76,11 @@ jobs:
           fi
 
       - name: Checkout code
-        if: fromJSON(needs.metadata.outputs.has_diff)
+        if: needs.metadata.outputs.has_diff
         uses: actions/checkout@v2
 
       - name: Run merge
-        if: fromJSON(needs.metadata.outputs.has_diff)
+        if: needs.metadata.outputs.has_diff
         uses: devmasx/merge-branch@v1.4.0
         with:
           type: now
@@ -94,7 +94,7 @@ jobs:
   publish:
     name: Publish
     needs: [metadata, merge]
-    if: fromJSON(needs.metadata.outputs.has_diff)
+    if: needs.metadata.outputs.has_diff
     uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
     secrets:
       app_private_key: ${{ secrets.APP_PRIVATE_KEY }}
@@ -108,9 +108,9 @@ jobs:
     needs: [metadata, publish]
     if: |
       contains('refs/heads/staging refs/heads/master', github.ref) &&
-      ((github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff) &&
+      ((github.event.inputs.merge == 'y' && needs.metadata.outputs.has_diff &&
       github.ref == 'refs/heads/master' && success()) ||
-      ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && always()))
+      ((github.event.inputs.merge != 'y' || !needs.metadata.outputs.has_diff) && always()))
     steps:
       - run: echo 'deploy'
 
