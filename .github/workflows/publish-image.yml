@@ -84,7 +84,7 @@ jobs:
         with:
           app_id: ${{ env.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
-          sha: ${{ needs.publish.outputs.sha }}
+#          sha: ${{ needs.publish.outputs.sha }}
           name: Publish Image
           conclusion: ${{ needs.publish.result }}
           details_url:  ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
