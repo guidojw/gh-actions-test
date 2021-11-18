@@ -97,7 +97,7 @@ jobs:
         id: get_sha
         if: fromJSON(needs.metadata.outputs.has_diff)
         run: |
-          git fetch
+          git fetch origin master
           echo '::set-output name=sha::'$(git rev-parse HEAD)
 
   # The merge commit from above step did not trigger the Publish Image workflow
