@@ -110,8 +110,6 @@ jobs:
     uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
     with:
       sha: ${{ needs.merge.outputs.sha }}
-    secrets:
-      app_private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
   # Above comment holds for Continuous Integration too.
   # TODO: Call Continuous Integration workflow
