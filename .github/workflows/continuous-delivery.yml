@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: branch-check
     outputs:
-      has_diff: ${{ fromJSON(steps.get_metadata.outputs.has_diff) }}
+      has_diff: ${{ steps.get_metadata.outputs.has_diff }}
       stage: ${{ steps.get_metadata.outputs.stage }}
     steps:
       - name: Checkout code
@@ -70,7 +70,7 @@ jobs:
       - name: Validate inputs
         env:
           REF: ${{ github.ref }}
-          HAS_DIFF: ${{ needs.metadata.outputs.has_diff }}
+          HAS_DIFF: ${{ fromJSON(needs.metadata.outputs.has_diff) }}
         run: |
           if [ $REF != 'refs/heads/master' ]; then
             echo 'Can only merge when the workflow target branch is master.'
@@ -81,11 +81,11 @@ jobs:
           fi
 
       - name: Checkout code
-        if: ${{ needs.metadata.outputs.has_diff }}
+        if: fromJSON(needs.metadata.outputs.has_diff)
         uses: actions/checkout@v2
 
       - name: Run merge
-        if: ${{ needs.metadata.outputs.has_diff }}
+        if: fromJSON(needs.metadata.outputs.has_diff)
         uses: devmasx/merge-branch@v1.4.0
         with:
           type: now
@@ -95,7 +95,7 @@ jobs:
 
       - name: Get merge commit SHA
         id: get_sha
-        if: ${{ needs.metadata.outputs.has_diff }}
+        if: fromJSON(needs.metadata.outputs.has_diff)
         run: |
           git fetch
           echo '::set-output name=sha::'$(git rev-parse HEAD)
@@ -106,7 +106,7 @@ jobs:
   publish:
     name: Publish
     needs: [metadata, merge]
-    if: ${{ needs.metadata.outputs.has_diff }}
+    if: fromJSON(needs.metadata.outputs.has_diff)
     uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
     with:
       sha: ${{ needs.merge.outputs.sha }}
@@ -122,9 +122,9 @@ jobs:
     needs: [metadata, publish]
     if: |
       contains('refs/heads/staging refs/heads/master', github.ref) &&
-      ((github.event.inputs.merge == 'y' && needs.metadata.outputs.has_diff && github.ref == 'refs/heads/master' &&
-      success()) ||
-      ((github.event.inputs.merge != 'y' || !needs.metadata.outputs.has_diff) && always()))
+      ((github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff) &&
+      github.ref == 'refs/heads/master' && success()) ||
+      ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && always()))
     steps:
       - name: Test SSH
         uses: appleboy/ssh-action@v0.1.4
