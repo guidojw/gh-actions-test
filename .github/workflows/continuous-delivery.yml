@@ -151,6 +151,17 @@ jobs:
     needs: [merge, deploy]
     if: contains('refs/heads/staging refs/heads/master', github.ref) && always()
     steps:
+      - name: Get conclusion
+        id: get_conclusion
+        env:
+          RESULT: ${{ needs.deploy.result }}
+        run: |
+          if [ $RESULT = 'skipped' ]; then
+            echo '::set-output name=conclusion::cancelled'
+          else
+            echo '::set-output name=conclusion::'$RESULT
+          fi
+
       - name: Update Continuous Delivery Check Run
         uses: guidojw/actions/update-check-run@main
         with:
@@ -158,5 +169,5 @@ jobs:
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
           sha: ${{ needs.merge.outputs.sha }}
           name: Continuous Delivery
-          conclusion: ${{ needs.deploy.result }}
+          conclusion: ${{ steps.get_conclusion.outputs.conclusion }}
           details_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
