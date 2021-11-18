@@ -19,10 +19,10 @@ jobs:
     name: Metadata
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.metadata.outputs.tag }}
+      tag: ${{ steps.get_metadata.outputs.tag }}
     steps:
       - name: Get metadata
-        id: metadata
+        id: get_metadata
         env:
           REF: ${{ github.ref }}
         run: |
