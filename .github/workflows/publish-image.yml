@@ -70,11 +70,23 @@ jobs:
     needs: publish
     if: github.event_name == 'workflow_dispatch' && always()
     steps:
+      - name: Get conclusion
+        id: get_conclusion
+        env:
+          RESULT: ${{ needs.publish.result }}
+        run: |
+          echo $RESULT
+          if [ $RESULT = 'skipped' ]; then
+            echo '::set-output name=conclusion::cancelled'
+          else
+            echo '::set-output name=conclusion::'$RESULT
+          fi
+
       - name: Update Publish Image Check Run
         uses: guidojw/actions/update-check-run@main
         with:
           app_id: ${{ env.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
           name: Publish Image
-          conclusion: ${{ needs.publish.result }}
+          conclusion: ${{ steps.get_conclusion.outputs.conclusion }}
           details_url:  ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
