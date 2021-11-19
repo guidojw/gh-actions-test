@@ -64,18 +64,23 @@ jobs:
           tags: |
             ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ needs.metadata.outputs.tag }}
 
-  update-check-runs:
-    name: Update Check Runs
+  update-check-run:
+    name: Update Check Run
     runs-on: ubuntu-latest
-    needs: publish
+    needs: [metadata, publish]
     if: github.event_name == 'workflow_dispatch' && always()
     steps:
       - name: Get conclusion
         id: get_conclusion
         env:
           RESULT: ${{ needs.publish.result }}
+          RESULTS: ${{ join(needs.*.result, ' ') }}
         run: |
           echo $RESULT
+          for RESULT in $RESULTS; do
+            echo $result
+          done
+
           if [ $RESULT = 'skipped' ]; then
             echo '::set-output name=conclusion::cancelled'
           else
