@@ -24,10 +24,8 @@ jobs:
     steps:
       - name: Get metadata
         id: get_metadata
-        env:
-          REF: ${{ github.ref }}
         run: |
-          BRANCH_NAME=${REF#refs/heads/}
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
           if [ $BRANCH_NAME = 'master' ]; then
             echo '::set-output name=tag::latest'
           else
