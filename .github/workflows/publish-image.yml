@@ -24,10 +24,8 @@ jobs:
     steps:
       - name: Get metadata
         id: get_metadata
-        env:
-          REF: ${{ github.ref }}
         run: |
-          BRANCH_NAME=${REF#refs/heads/}
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
           if [ $BRANCH_NAME = 'master' ]; then
             echo '::set-output name=tag::latest'
           else
@@ -84,7 +82,7 @@ jobs:
           echo '::set-output name=conclusion::success'
 
       - name: Update Publish Image Check Run
-        uses: guidojw/actions/update-check-run@main
+        uses: guidojw/actions/update-check-run@v1
         with:
           app_id: ${{ env.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
