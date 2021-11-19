@@ -77,6 +77,7 @@ jobs:
           RESULTS: ${{ join(needs.*.result, ' ') }}
         run: |
           echo $RESULT
+          echo $RESULTS
           for RESULT in $RESULTS; do
             echo $result
           done
