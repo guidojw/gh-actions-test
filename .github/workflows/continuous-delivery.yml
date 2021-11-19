@@ -135,6 +135,7 @@ jobs:
           STAGE: ${{ needs.metadata.outputs.stage }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
+          sleep 60s
           curl -sSf \
             -X POST \
             -H 'Content-type: application/json' \
