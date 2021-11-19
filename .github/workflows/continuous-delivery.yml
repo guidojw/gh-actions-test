@@ -102,7 +102,7 @@ jobs:
     name: Publish
     needs: [metadata, merge]
     if: fromJSON(needs.metadata.outputs.has_diff)
-    uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
+    uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@master
     with:
       sha: ${{ needs.merge.outputs.sha }}
 
@@ -154,7 +154,6 @@ jobs:
               echo '::set-output name=conclusion::'$RESULT
               exit
             fi;
-            echo $RESULT
           done
           echo '::set-output name=conclusion::success'
 

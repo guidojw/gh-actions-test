@@ -80,7 +80,6 @@ jobs:
               echo '::set-output name=conclusion::'$RESULT
               exit
             fi;
-            echo $RESULT
           done
           echo '::set-output name=conclusion::success'
 
