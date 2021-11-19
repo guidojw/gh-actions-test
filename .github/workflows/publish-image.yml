@@ -87,7 +87,7 @@ jobs:
             if [ $RESULT = 'cancelled' ] || [ $RESULT = 'failure' ]; then
               echo '::set-output name=conclusion::'$RESULT
               exit
-            fi;
+            fi
           done
           echo '::set-output name=conclusion::success'
 

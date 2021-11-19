@@ -6,7 +6,7 @@ on:
       merge:
         description: Merge staging into master first? (y/N)
         required: false
-        default: "n"
+        default: 'n'
 
 concurrency:
   group: cd-${{ github.ref }}
@@ -148,7 +148,7 @@ jobs:
             if [ $RESULT = 'cancelled' ] || [ $RESULT = 'failure' ]; then
               echo '::set-output name=conclusion::'$RESULT
               exit
-            fi;
+            fi
           done
           echo '::set-output name=conclusion::success'
 
