@@ -110,7 +110,7 @@ jobs:
     needs: [metadata, publish]
     if: |
       contains('refs/heads/staging refs/heads/master', github.ref) && (github.ref == 'refs/heads/master' &&
-      (github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff) && success()) ||
+      github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff) && success() ||
       ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && !cancelled()))
     steps:
 #      - name: Test SSH
