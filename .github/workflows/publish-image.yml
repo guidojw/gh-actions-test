@@ -84,7 +84,7 @@ jobs:
           echo '::set-output name=conclusion::success'
 
       - name: Update Publish Image Check Run
-        uses: guidojw/actions/update-check-run@main
+        uses: guidojw/actions/update-check-run@v1
         with:
           app_id: ${{ env.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
