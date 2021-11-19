@@ -79,7 +79,7 @@ jobs:
           echo $RESULT
           echo $RESULTS
           for RESULT in $RESULTS; do
-            echo $result
+            echo $RESULT
           done
 
           if [ $RESULT = 'skipped' ]; then
