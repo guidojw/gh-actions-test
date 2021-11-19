@@ -1,5 +1,6 @@
 FROM node:17.1.0-alpine
 
-RUN echo 'Dockerfile'
+ARG BUILD_HASH
 
+RUN echo 'Dockerfile'
 RUN echo $BUILD_HASH

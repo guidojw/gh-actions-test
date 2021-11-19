@@ -37,7 +37,7 @@ jobs:
             if [ $BRANCH_NAME = 'staging' ]; then
               BUILD_ARGS+=$'\nDEPLOY_TARGET=staging'
             fi
-            echo '::set-output name=build_args::'$BUILD_ARGS
+            echo '::set-output name=build_args::'"$BUILD_ARGS"
           fi
 
   publish:
