@@ -26,7 +26,7 @@ jobs:
       - name: Get metadata
         id: get_metadata
         env:
-          EVENT_NAME: %{{ github.event_name }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           BRANCH_NAME=${GITHUB_REF#refs/heads/}
           if [ $BRANCH_NAME = 'master' ]; then
