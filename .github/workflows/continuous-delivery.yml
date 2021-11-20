@@ -113,6 +113,9 @@ jobs:
       github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff) && success() ||
       ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && !cancelled()))
     steps:
+      - run: |
+          sleep 30s
+
       - name: Start deployment
         uses: bobheadxi/deployments@v0.4.3
         id: start_deployment
@@ -135,7 +138,6 @@ jobs:
           STAGE: ${{ needs.metadata.outputs.stage }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          sleep 60s
           curl -sSf \
             -X POST \
             -H 'Content-type: application/json' \
