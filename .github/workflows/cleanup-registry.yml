@@ -5,6 +5,9 @@ on:
     - cron: '0 0 * * *' # https://crontab.guru/#0_0_*_*_*
   workflow_dispatch:
 
+env:
+  APP_ID: 152323
+
 jobs:
   cleanup:
     name: Cleanup
@@ -15,6 +18,13 @@ jobs:
         run: |
           echo '::set-output name=image_name::'${GITHUB_REPOSITORY#*/}
 
+      - name: Generate app token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ env.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Delete old versions
         uses: snok/container-retention-policy@v1
         with:
@@ -23,7 +33,7 @@ jobs:
           cut-off: 1 hour ago UTC
           account-type: personal
           skip-tags: latest,staging
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.generate_token.outputs.token }}
 
       - name: Delete untagged versions
         uses: snok/container-retention-policy@v1
@@ -33,4 +43,4 @@ jobs:
           cut-off: 1 hour ago UTC
           account-type: personal
           untagged-only: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.generate_token.outputs.token }}
