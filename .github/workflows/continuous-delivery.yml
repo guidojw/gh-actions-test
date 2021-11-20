@@ -101,9 +101,6 @@ jobs:
     with:
       sha: ${{ needs.merge.outputs.sha }}
 
-  # Above comment holds for Continuous Integration too.
-  # TODO: Call Continuous Integration workflow
-
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -113,9 +110,6 @@ jobs:
       github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff) && success() ||
       ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && !cancelled()))
     steps:
-      - run: |
-          sleep 30s
-
       - name: Start deployment
         uses: bobheadxi/deployments@v0.4.3
         id: start_deployment
