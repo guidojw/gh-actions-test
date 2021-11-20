@@ -1,0 +1,36 @@
+name: Cleanup Registry
+
+on:
+  schedule:
+#    - cron: '0 0 * * *' # https://crontab.guru/#0_0_*_*_*
+    - cron: '5 * * * *' # https://crontab.guru/#5_*_*_*_*
+
+jobs:
+  cleanup:
+    name: Cleanup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get image name
+        id: get_image_name
+        run: |
+          echo '::set-output name=image_name::'${GITHUB_REF#/refs/heads/}
+
+      - name: Delete old versions
+        uses: snok/container-retention-policy@v1
+        with:
+          image-names: ${{ steps.get_image_name.outputs.image_name }}
+#          cut-off: 1 week ago UTC
+          cut-off: 1 hour ago UTC
+          account-type: personal
+          skip-tags: latest,staging
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete untagged versions
+        uses: snok/container-retention-policy@v1
+        with:
+          image-names: ${{ steps.get_image_name.outputs.image_name }}
+#          cut-off: 1 week ago UTC
+          cut-off: 1 hour ago UTC
+          account-type: personal
+          untagged-only: true
+          token: ${{ secrets.GITHUB_TOKEN }}
