@@ -2,8 +2,8 @@ name: Cleanup Registry
 
 on:
   schedule:
-#    - cron: '0 0 * * *' # https://crontab.guru/#0_0_*_*_*
-    - cron: '5 * * * *' # https://crontab.guru/#5_*_*_*_*
+    - cron: '0 0 * * *' # https://crontab.guru/#0_0_*_*_*
+  workflow_dispatch:
 
 jobs:
   cleanup:
