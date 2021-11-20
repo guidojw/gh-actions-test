@@ -13,7 +13,7 @@ jobs:
       - name: Get image name
         id: get_image_name
         run: |
-          echo '::set-output name=image_name::'${GITHUB_REF#/refs/heads/}
+          echo '::set-output name=image_name::'${GITHUB_REF#refs/heads/}
 
       - name: Delete old versions
         uses: snok/container-retention-policy@v1
