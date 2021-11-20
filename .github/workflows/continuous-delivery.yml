@@ -146,7 +146,7 @@ jobs:
 
       - name: Finish deployment
         uses: bobheadxi/deployments@v0.4.3
-        if: always()
+        if: steps.start_deployment.conclusion == 'success' && always()
         with:
           step: finish
           token: ${{ secrets.GITHUB_TOKEN }}
