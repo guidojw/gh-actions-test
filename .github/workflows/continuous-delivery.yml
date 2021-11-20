@@ -40,7 +40,7 @@ jobs:
       - name: Get metadata
         id: get_metadata
         env:
-          INPUT_MERGE: ${{ inputs.merge }}
+          INPUT_MERGE: ${{ github.event.inputs.merge }}
         run: |
           if [ $GITHUB_REF = 'refs/heads/master' ]; then
             if [ "${INPUT_MERGE,,}" = 'y' ]; then
