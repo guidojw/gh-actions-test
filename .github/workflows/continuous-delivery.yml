@@ -39,6 +39,8 @@ jobs:
 
       - name: Get metadata
         id: get_metadata
+        env:
+          INPUT_MERGE: ${{ inputs.merge }}
         run: |
           if [ $GITHUB_REF = 'refs/heads/master' ]; then
             if [ "${INPUT_MERGE,,}" = 'y' ]; then
@@ -64,7 +66,7 @@ jobs:
     steps:
       - name: Validate inputs
         env:
-          HAS_DIFF: ${{ fromJSON(needs.metadata.outputs.has_diff) }}
+          HAS_DIFF: ${{ fromJSON(needs.metadata.outputs.has_diff || false) }}
         run: |
           if [ $GITHUB_REF != 'refs/heads/master' ]; then
             echo 'Can only merge when the workflow target branch is master.'
