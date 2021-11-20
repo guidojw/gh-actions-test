@@ -40,12 +40,14 @@ jobs:
       - name: Get metadata
         id: get_metadata
         run: |
-          git fetch origin master
-          git fetch origin staging
-          if ! git diff origin/master origin/staging --exit-code; then
-            echo '::set-output name=has_diff::true'
-          else
-            echo '::set-output name=has_diff::false'
+          if [ "${INPUT_MERGE,,}" = 'y' ]; then
+            git fetch origin master
+            git fetch origin staging
+            if ! git diff origin/master origin/staging --exit-code; then
+              echo '::set-output name=has_diff::true'
+            else
+              echo '::set-output name=has_diff::false'
+            fi
           fi
           if [ $GITHUB_REF = 'refs/heads/master' ]; then
             echo '::set-output name=stage::production'
