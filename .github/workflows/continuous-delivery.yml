@@ -6,7 +6,7 @@ on:
       merge:
         description: Merge staging into master first? (y/N)
         required: false
-        default: "n"
+        default: 'n'
 
 concurrency:
   group: cd-${{ github.ref }}
@@ -101,9 +101,6 @@ jobs:
     with:
       sha: ${{ needs.merge.outputs.sha }}
 
-  # Above comment holds for Continuous Integration too.
-  # TODO: Call Continuous Integration workflow
-
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -113,6 +110,14 @@ jobs:
       github.event.inputs.merge == 'y' && fromJSON(needs.metadata.outputs.has_diff) && success() ||
       ((github.event.inputs.merge != 'y' || !fromJSON(needs.metadata.outputs.has_diff)) && !cancelled()))
     steps:
+      - name: Start deployment
+        uses: bobheadxi/deployments@v0.4.3
+        id: start_deployment
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: ${{ needs.metadata.outputs.stage }}
+
 #      - name: Test SSH
 #        uses: appleboy/ssh-action@v0.1.4
 #        with:
@@ -133,6 +138,16 @@ jobs:
             -d '{"text": "Deploy for '${GITHUB_REPOSITORY#*/}' '$STAGE' is finished."}' \
             "$SLACK_WEBHOOK_URL"
 
+      - name: Finish deployment
+        uses: bobheadxi/deployments@v0.4.3
+        if: steps.start_deployment.conclusion == 'success' && always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+          deployment_id: ${{ steps.start_deployment.outputs.deployment_id }}
+          env_url: https://www.google.com
+
   update_check_run:
     name: Update Check Run
     runs-on: ubuntu-latest
@@ -148,7 +163,7 @@ jobs:
             if [ $RESULT = 'cancelled' ] || [ $RESULT = 'failure' ]; then
               echo '::set-output name=conclusion::'$RESULT
               exit
-            fi;
+            fi
           done
           echo '::set-output name=conclusion::success'
 
