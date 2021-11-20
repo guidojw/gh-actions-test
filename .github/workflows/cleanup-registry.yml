@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAMES: github-actions-test
+  IMAGE_NAMES: gh-actions-test
 
 jobs:
   cleanup:
