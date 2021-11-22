@@ -145,17 +145,6 @@ jobs:
         with:
           environment: ${{ needs.metadata.outputs.stage }}
 
-      - name: Test Slack webhook
-        env:
-          STAGE: ${{ needs.metadata.outputs.stage }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          curl -sSf \
-            -X POST \
-            -H 'Content-type: application/json' \
-            -d '{"text": "Deploy for '${GITHUB_REPOSITORY#*/}' '$STAGE' is finished."}' \
-            "$SLACK_WEBHOOK_URL"
-
       - name: Finish deployment
         uses: bobheadxi/deployments@v0.4.3
         if: steps.start_deployment.conclusion == 'success' && always()
