@@ -1,0 +1,41 @@
+name: Update Check Run
+
+on:
+  workflow_call:
+    inputs:
+      results:
+        required: false
+        type: string
+    secrets:
+      app_private_key:
+        required: true
+
+env:
+  APP_ID: 152323
+
+jobs:
+  update_check_run:
+    name: Update Check Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get conclusion
+        id: get_conclusion
+        env:
+          RESULTS: ${{ github.event.inputs.results }}
+        run: |
+          for RESULT in $RESULTS; do
+            if [ $RESULT = 'cancelled' ] || [ $RESULT = 'failure' ]; then
+              echo '::set-output name=conclusion::'$RESULT
+              exit
+            fi
+          done
+          echo '::set-output name=conclusion::success'
+
+      - name: Update Publish Image Check Run
+        uses: guidojw/actions/update-check-run@v1
+        with:
+          app_id: ${{ env.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          name: Publish Image
+          conclusion: ${{ steps.get_conclusion.outputs.conclusion }}
+          details_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
