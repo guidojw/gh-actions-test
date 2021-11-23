@@ -12,6 +12,8 @@ concurrency:
   group: cd-${{ github.ref_name }}
 
 env:
+  PROJECT_NAME: gh-actions-test
+  SENTRY_ORG: guidos-projects
   APP_ID: 152323
 
 jobs:
@@ -129,21 +131,25 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           env: ${{ needs.metadata.outputs.stage }}
 
-#      - name: Test SSH
-#        uses: appleboy/ssh-action@v0.1.4
-#        with:
-#          host: guidojw.nl
-#          username: github-actions
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          script: |
-#            ls /opt/docker
+      - name: Deploy
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          STAGE: ${{ needs.metadata.outputs.stage }}
+        with:
+          host: guidojw.nl
+          username: github-actions
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: PROJECT_NAME,STAGE
+          script: |
+            cd /opt/docker/$PROJECT_NAME/$STAGE
+            docker-compose pull
+            docker-compose up -d
 
       - name: Finalize Sentry release
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: guidos-projects
-          SENTRY_PROJECT: gh-actions-test
+          SENTRY_PROJECT: ${{ env.PROJECT_NAME }}
         with:
           environment: ${{ needs.metadata.outputs.stage }}
 

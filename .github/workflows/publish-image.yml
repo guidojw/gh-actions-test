@@ -11,8 +11,9 @@ on:
   workflow_dispatch:
 
 env:
+  PROJECT_NAME: gh-actions-test
   REGISTRY_URL: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  SENTRY_ORG: guidos-projects
   APP_ID: 152323
 
 jobs:
@@ -77,16 +78,17 @@ jobs:
           cache-from: type=gha,scope=main
           cache-to: type=gha,scope=main
           tags: |
-            ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ needs.metadata.outputs.tag }}
+            ${{ env.REGISTRY_URL }}/${{ github.repository_owner }}/${{ env.PROJECT_NAME }}:${{
+            needs.metadata.outputs.tag }}
 
-#      - name: Get sourcemaps from image
-#        if: |
-#          github.event_name == 'push' || (github.event_name == 'workflow_dispatch' &&
-#          github.workflow == 'Continuous Delivery')
-#        env:
-#          IMAGE_NAME: ${{ fromJSON(steps.build_push_image.outputs.metadata)['image.name'] }}
-#        run: |
-#          docker cp $(docker create $IMAGE_NAME):/usr/share/nginx/html/assets sourcemaps
+      - name: Get sourcemaps from image
+        if: |
+          github.event_name == 'push' || (github.event_name == 'workflow_dispatch' &&
+          github.workflow == 'Continuous Delivery')
+        env:
+          IMAGE_NAME: ${{ fromJSON(steps.build_push_image.outputs.metadata)['image.name'] }}
+        run: |
+          docker cp $(docker create $IMAGE_NAME):/usr/share/nginx/html/assets sourcemaps
 
       - name: Create Sentry release
         if: |
@@ -95,8 +97,7 @@ jobs:
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: guidos-projects
-          SENTRY_PROJECT: gh-actions-test
+          SENTRY_PROJECT: ${{ env.PROJECT_NAME }}
         with:
           environment: ${{ needs.metadata.outputs.stage }}
           finalize: false
