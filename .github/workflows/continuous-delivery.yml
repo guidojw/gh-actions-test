@@ -161,6 +161,5 @@ jobs:
     uses: guidojw/gh-actions-test/.github/workflows/update-check-run.yml@staging
     with:
       results: ${{ join(needs.*.result, ' ') }}
-      name: Continuous Delivery
     secrets:
       app_private_key: ${{ secrets.app_private_key }}

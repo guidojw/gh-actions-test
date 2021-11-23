@@ -6,9 +6,6 @@ on:
       results:
         required: false
         type: string
-      name:
-        required: true
-        type: string
     secrets:
       app_private_key:
         required: true
@@ -34,11 +31,11 @@ jobs:
           done
           echo '::set-output name=conclusion::success'
 
-      - name: Update Check Run
+      - name: Update Publish Image Check Run
         uses: guidojw/actions/update-check-run@v1
         with:
           app_id: ${{ env.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
-          name: ${{ inputs.name }}
+          name: Publish Image
           conclusion: ${{ steps.get_conclusion.outputs.conclusion }}
           details_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
