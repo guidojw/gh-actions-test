@@ -31,6 +31,7 @@ jobs:
           else
             echo '::set-output name=tag::'${GITHUB_REF#refs/heads/}
           fi
+
           if [ $GITHUB_REF = 'refs/heads/staging' ] || [ $GITHUB_REF = 'refs/heads/master' ]; then
             BUILD_ARGS='BUILD_HASH='$GITHUB_SHA
             if [ $GITHUB_REF = 'refs/heads/staging' ]; then
@@ -38,6 +39,7 @@ jobs:
             fi
             BUILD_ARGS=${BUILD_ARGS//$'\n'/'%0A'}
             echo '::set-output name=build_args::'$BUILD_ARGS
+
             if [ $GITHUB_REF = 'refs/heads/master' ]; then
               echo '::set-output name=stage::production'
             else
@@ -74,9 +76,9 @@ jobs:
           build-args: ${{ needs.metadata.outputs.build_args }}
           cache-from: type=gha,scope=main
           cache-to: type=gha,scope=main
-          load: ${{ github.event_name == 'push' }}
           tags: |
             ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ needs.metadata.outputs.tag }}
+          outputs: type=docker
 
       - name: Get sourcemaps from image
         if: github.event_name == 'push'
