@@ -105,7 +105,7 @@ jobs:
     name: Update Check Run
     needs: [metadata, publish]
     if: github.event_name == 'workflow_dispatch' && github.workflow == 'Publish Image' && always()
-    uses: guidojw/gh-actions-test/.github/workflows/update-check-run.yml@master
+    uses: guidojw/gh-actions-test/.github/workflows/update-check-run.yml@staging
     with:
       results: ${{ join(needs.*.result, ' ') }}
       name: Publish Image

@@ -99,7 +99,7 @@ jobs:
     name: Publish
     needs: [metadata, merge]
     if: fromJSON(needs.metadata.outputs.has_diff)
-    uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@master
+    uses: guidojw/gh-actions-test/.github/workflows/publish-image.yml@staging
     with:
       sha: ${{ needs.merge.outputs.sha }}
 
@@ -158,7 +158,7 @@ jobs:
     name: Update Check Run
     needs: [branch_check, metadata, merge, publish, deploy]
     if: contains('refs/heads/staging refs/heads/master', github.ref) && always()
-    uses: guidojw/gh-actions-test/.github/workflows/update-check-run.yml@master
+    uses: guidojw/gh-actions-test/.github/workflows/update-check-run.yml@staging
     with:
       results: ${{ join(needs.*.result, ' ') }}
       name: Continuous Delivery
