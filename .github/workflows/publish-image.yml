@@ -80,8 +80,8 @@ jobs:
 
 #      - name: Get sourcemaps from image
 #        if: |
-#          github.event_name == 'push' || github.event_name == 'workflow_dispatch' &&
-#          github.workflow == 'Continuous Delivery'
+#          github.event_name == 'push' || (github.event_name == 'workflow_dispatch' &&
+#          github.workflow == 'Continuous Delivery')
 #        env:
 #          IMAGE_NAME: ${{ fromJSON(steps.build_push_image.outputs.metadata)['image.name'] }}
 #        run: |
@@ -89,8 +89,8 @@ jobs:
 
       - name: Create Sentry release
         if: |
-          github.event_name == 'push' || github.event_name == 'workflow_dispatch' &&
-          github.workflow == 'Continuous Delivery'
+          github.event_name == 'push' || (github.event_name == 'workflow_dispatch' &&
+          github.workflow == 'Continuous Delivery')
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
