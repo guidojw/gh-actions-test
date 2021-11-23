@@ -136,7 +136,7 @@ jobs:
 #          script: |
 #            ls /opt/docker
 
-      - name: Create Sentry release
+      - name: Finalize Sentry release
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -144,7 +144,6 @@ jobs:
           SENTRY_PROJECT: gh-actions-test
         with:
           environment: ${{ needs.metadata.outputs.stage }}
-          sourcemaps: dist/assets
 
       - name: Finish deployment
         uses: bobheadxi/deployments@v0.4.3
