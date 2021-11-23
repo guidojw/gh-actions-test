@@ -79,12 +79,12 @@ jobs:
           tags: |
             ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ needs.metadata.outputs.tag }}
 
-      - name: Get sourcemaps from image
-        if: github.event_name == 'push'
-        env:
-          IMAGE_NAME: ${{ fromJSON(steps.build_push_image.outputs.metadata)['image.name'] }}
-        run: |
-          docker cp $(docker create $IMAGE_NAME):.github sourcemaps
+#      - name: Get sourcemaps from image
+#        if: github.event_name == 'push'
+#        env:
+#          IMAGE_NAME: ${{ fromJSON(steps.build_push_image.outputs.metadata)['image.name'] }}
+#        run: |
+#          docker cp $(docker create $IMAGE_NAME):/usr/share/nginx/html sourcemaps
 
       - name: Create Sentry release
         if: github.event_name == 'push'
@@ -96,7 +96,7 @@ jobs:
         with:
           environment: ${{ needs.metadata.outputs.stage }}
           finalize: false
-          sourcemaps: sourcemaps
+#          sourcemaps: sourcemaps
 
   update_check_run:
     name: Update Check Run
