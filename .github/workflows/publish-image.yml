@@ -108,5 +108,6 @@ jobs:
     uses: guidojw/gh-actions-test/.github/workflows/update-check-run.yml@master
     with:
       results: ${{ join(needs.*.result, ' ') }}
+      name: Publish Image
     secrets:
       app_private_key: ${{ secrets.app_private_key }}
