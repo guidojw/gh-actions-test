@@ -21,7 +21,7 @@ jobs:
       - name: Get conclusion
         id: get_conclusion
         env:
-          RESULTS: ${{ inputs.results }}
+          RESULTS: ${{ github.event.inputs.results }}
         run: |
           for RESULT in $RESULTS; do
             if [ $RESULT = 'cancelled' ] || [ $RESULT = 'failure' ]; then
