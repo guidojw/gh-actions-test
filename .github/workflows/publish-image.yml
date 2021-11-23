@@ -78,26 +78,31 @@ jobs:
           cache-to: type=gha,scope=main
           tags: |
             ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ needs.metadata.outputs.tag }}
-          outputs: type=docker
+          outputs: type=local,dest=image
 
-      - name: Get sourcemaps from image
+      - name: Test
         if: github.event_name == 'push'
-        env:
-          DIGEST: ${{ steps.build_push_image.outputs.digest }}
         run: |
-          docker cp $DIGEST:/usr/share/nginx/html sourcemaps
+          ls -la image
 
-      - name: Create Sentry release
-        if: github.event_name == 'push'
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: guidos-projects
-          SENTRY_PROJECT: gh-actions-test
-        with:
-          environment: ${{ needs.metadata.outputs.stage }}
-          finalize: false
-          sourcemaps: sourcemaps
+#      - name: Get sourcemaps from image
+#        if: github.event_name == 'push'
+#        env:
+#          DIGEST: ${{ steps.build_push_image.outputs.metadata.image.name }}
+#        run: |
+#          docker cp $DIGEST:/usr/share/nginx/html sourcemaps
+#
+#      - name: Create Sentry release
+#        if: github.event_name == 'push'
+#        uses: getsentry/action-release@v1
+#        env:
+#          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+#          SENTRY_ORG: guidos-projects
+#          SENTRY_PROJECT: gh-actions-test
+#        with:
+#          environment: ${{ needs.metadata.outputs.stage }}
+#          finalize: false
+#          sourcemaps: sourcemaps
 
   update_check_run:
     name: Update Check Run
