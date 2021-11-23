@@ -80,14 +80,16 @@ jobs:
             ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ needs.metadata.outputs.tag }}
 
 #      - name: Get sourcemaps from image
-#        if: github.event_name == 'push'
+#        if: |
+#          github.event_name == 'push' || github.event_name == 'workflow_dispatch' && github.workflow == 'Publish Image'
 #        env:
 #          IMAGE_NAME: ${{ fromJSON(steps.build_push_image.outputs.metadata)['image.name'] }}
 #        run: |
-#          docker cp $(docker create $IMAGE_NAME):/usr/share/nginx/html sourcemaps
+#          docker cp $(docker create $IMAGE_NAME):/usr/share/nginx/html/assets sourcemaps
 
       - name: Create Sentry release
-        if: github.event_name == 'push'
+        if: |
+          github.event_name == 'push' || github.event_name == 'workflow_dispatch' && github.workflow == 'Publish Image'
         uses: getsentry/action-release@v1
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
