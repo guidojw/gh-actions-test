@@ -144,6 +144,7 @@ jobs:
           SENTRY_PROJECT: gh-actions-test
         with:
           environment: ${{ needs.metadata.outputs.stage }}
+          sourcemaps: dist/assets
 
       - name: Finish deployment
         uses: bobheadxi/deployments@v0.4.3
