@@ -182,7 +182,7 @@ jobs:
           done
           echo '::set-output name=conclusion::success'
 
-      - name: Update Continuous Delivery Check Run
+      - name: Update Continuous Delivery check run
         uses: guidojw/actions/update-check-run@v1
         with:
           app_id: ${{ env.APP_ID }}

@@ -122,7 +122,7 @@ jobs:
           done
           echo '::set-output name=conclusion::success'
 
-      - name: Update Publish Image Check Run
+      - name: Update Publish Image check run
         uses: guidojw/actions/update-check-run@v1
         with:
           app_id: ${{ env.APP_ID }}
