@@ -1,8 +1,10 @@
-FROM node:17.1.0-alpine
+FROM node:17.1.0
 
-ARG BUILD_HASH
+WORKDIR /opt/app
+COPY package.json yarn.lock ./
+RUN yarn install
 
-COPY sourcemaps /usr/share/nginx/html/assets
+COPY . .
+RUN yarn build
 
-RUN echo 'Dockerfile'
-RUN echo $BUILD_HASH
+CMD yarn start
